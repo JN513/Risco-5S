@@ -56,3 +56,4 @@ teste
 .vscode/settings.json
 teste2.c
 build/
+env/
