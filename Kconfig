@@ -1,0 +1,13 @@
+menu "Risco-5S Configuration"
+
+config DEBUG
+    bool "Enable debug"
+    default y
+    help
+      Enable this option to include My Feature in the build.
+
+config MEMORY_SIZE
+    int "Memory size"
+    default 4096
+
+endmenu

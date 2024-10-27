@@ -1,12 +1,41 @@
 #ifndef __SIMULATOR_H__
 #define __SIMULATOR_H__
 
+#define DEBUG 1
+
+typedef enum InstType { R, I, S, B, U, J } InstType;
+
+typedef struct InstData {
+    int opcode;
+    int rd;
+    int rs1;
+    int rs2;
+    int imm;
+    int funct3;
+    int funct7;
+    InstType type;
+} InstData;
+
 #define MEMORY_SIZE 4096
 
-static int registers[32];
-static float f_registers[32]; // 32 floating point registers
-static int pc;
+extern int registers[32];         // Declare a variável global como extern
+extern float f_registers[32];     // Declare a variável global como extern
+extern int pc;
+extern int memory[MEMORY_SIZE];   // Declare a variável global como extern
 
-int memory[MEMORY_SIZE];
+// Funções para manipulação de memória
+int decode_instruction(int hex_instruction, InstData *instruction);
+unsigned int memory_load_byte(unsigned int address);
+unsigned int memory_load_half(unsigned int address);
+unsigned int memory_load_word(unsigned int address);
+unsigned int memory_load_unsigned_byte(unsigned int address);
+unsigned int memory_load_unsigned_half(unsigned int address);
+void memory_store_byte(unsigned int address, unsigned int data);
+void memory_store_halfword(unsigned int address, unsigned int data);
+void memory_store_word(unsigned int address, unsigned int data);
+int open_memory_file(char *filename, int memory[]);
+int execute_instruction(InstData *instruction);
+int execute_system_instruction(InstData *instruction);
+void init_simulator();
 
-#endif
+#endif // __SIMULATOR_H__
