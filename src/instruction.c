@@ -2,6 +2,7 @@
 #include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 
 void get_instruction_type(InstData * instruction){
@@ -134,73 +135,127 @@ int execute_RType(InstData * instruction){
 #ifdef DEBUG
     print_info("Executing R-Type instruction\n");
 #endif
+    if(instruction->funct7 & 0x1){
+        switch (instruction->funct3) {
+            case 0: // MUL: Multiplicação com sinal
+                registers[instruction->rd] = (int)registers[instruction->rs1] * (int)registers[instruction->rs2];
+                break;
 
-    switch (instruction->funct3)
-    {
-    case 0: // ADD ou SUB, dependendo de funct7
-        if(instruction->funct7 == 0) {
-            // ADD: Soma o valor dos registradores rs1 e rs2 e armazena o resultado em rd.
-            registers[instruction->rd] = registers[instruction->rs1] + 
-                registers[instruction->rs2];
-        } else {
-            // SUB: Subtrai o valor de rs2 de rs1 e armazena o resultado em rd.
-            registers[instruction->rd] = registers[instruction->rs1] - 
-                registers[instruction->rs2];
+            case 1: // MULH: Multiplicação de altos bits, com sinal em ambos os operandos
+                registers[instruction->rd] = ((int64_t)(int)registers[instruction->rs1] * (int64_t)(int)registers[instruction->rs2]) >> 32;
+                break;
+
+            case 2: // MULHSU: Multiplicação de altos bits, rs1 com sinal, rs2 sem sinal
+                registers[instruction->rd] = ((int64_t)(int)registers[instruction->rs1] * (uint64_t)registers[instruction->rs2]) >> 32;
+                break;
+
+            case 3: // MULHU: Multiplicação de altos bits, sem sinal em ambos os operandos
+                registers[instruction->rd] = ((uint64_t)registers[instruction->rs1] * (uint64_t)registers[instruction->rs2]) >> 32;
+                break;
+
+            case 4: // DIV: Divisão com sinal
+                if (registers[instruction->rs2] == 0) {
+                    registers[instruction->rd] = -1; // Divisão por zero retorna -1
+                } else {
+                    registers[instruction->rd] = (int)registers[instruction->rs1] / (int)registers[instruction->rs2];
+                }
+                break;
+
+            case 5: // DIVU: Divisão sem sinal
+                if (registers[instruction->rs2] == 0) {
+                    registers[instruction->rd] = -1; // Divisão por zero retorna -1
+                } else {
+                    registers[instruction->rd] = (unsigned)registers[instruction->rs1] / (unsigned)registers[instruction->rs2];
+                }
+                break;
+
+            case 6: // REM: Resto com sinal
+                if (registers[instruction->rs2] == 0) {
+                    registers[instruction->rd] = registers[instruction->rs1]; // Resto com divisor zero retorna o dividendo
+                } else {
+                    registers[instruction->rd] = (int)registers[instruction->rs1] % (int)registers[instruction->rs2];
+                }
+                break;
+
+            case 7: // REMU: Resto sem sinal
+                if (registers[instruction->rs2] == 0) {
+                    registers[instruction->rd] = registers[instruction->rs1]; // Resto com divisor zero retorna o dividendo
+                } else {
+                    registers[instruction->rd] = (unsigned)registers[instruction->rs1] % (unsigned)registers[instruction->rs2];
+                }
+                break;
+
+            default:
+                return -1; // Código de erro para instrução desconhecida
         }
-        break;
-    
-    case 1: // SLL (Shift Left Logical)
-        // Desloca o valor em rs1 para a esquerda pelo valor em rs2 e armazena em rd.
-        registers[instruction->rd] = registers[instruction->rs1] << 
-                registers[instruction->rs2];
-        break;
+    } else {
+        switch (instruction->funct3)
+        {
+        case 0: // ADD ou SUB, dependendo de funct7
+            if(instruction->funct7 == 0) {
+                // ADD: Soma o valor dos registradores rs1 e rs2 e armazena o resultado em rd.
+                registers[instruction->rd] = registers[instruction->rs1] + 
+                    registers[instruction->rs2];
+            } else {
+                // SUB: Subtrai o valor de rs2 de rs1 e armazena o resultado em rd.
+                registers[instruction->rd] = registers[instruction->rs1] - 
+                    registers[instruction->rs2];
+            }
+            break;
+        
+        case 1: // SLL (Shift Left Logical)
+            // Desloca o valor em rs1 para a esquerda pelo valor em rs2 e armazena em rd.
+            registers[instruction->rd] = registers[instruction->rs1] << 
+                    registers[instruction->rs2];
+            break;
 
-    case 2: // SLT (Set Less Than)
-        // Define rd como 1 se rs1 for menor que rs2, caso contrário, define como 0.
-        registers[instruction->rd] = registers[instruction->rs1] < 
-                registers[instruction->rs2];
-        break;
+        case 2: // SLT (Set Less Than)
+            // Define rd como 1 se rs1 for menor que rs2, caso contrário, define como 0.
+            registers[instruction->rd] = registers[instruction->rs1] < 
+                    registers[instruction->rs2];
+            break;
 
-    case 3: // SLTU (Set Less Than Unsigned)
-        // Compara rs1 e rs2 como valores sem sinal. Define rd como 1 se rs1 < rs2, caso contrário, 0.
-        registers[instruction->rd] = (unsigned)registers[instruction->rs1] < 
-                (unsigned)registers[instruction->rs2];
-        break;
+        case 3: // SLTU (Set Less Than Unsigned)
+            // Compara rs1 e rs2 como valores sem sinal. Define rd como 1 se rs1 < rs2, caso contrário, 0.
+            registers[instruction->rd] = (unsigned)registers[instruction->rs1] < 
+                    (unsigned)registers[instruction->rs2];
+            break;
 
-    case 4: // XOR
-        // Realiza a operação XOR bit a bit entre rs1 e rs2 e armazena o resultado em rd.
-        registers[instruction->rd] = registers[instruction->rs1] ^ 
-                registers[instruction->rs2];
-        break;
+        case 4: // XOR
+            // Realiza a operação XOR bit a bit entre rs1 e rs2 e armazena o resultado em rd.
+            registers[instruction->rd] = registers[instruction->rs1] ^ 
+                    registers[instruction->rs2];
+            break;
 
-    case 5: // SRL ou SRA (Shift Right Logical ou Shift Right Arithmetic), dependendo de funct7
-        if(instruction->funct7 == 0){
-            // SRL: Desloca o valor em rs1 para a direita de forma lógica e armazena em rd.
-            registers[instruction->rd] = (unsigned)registers[instruction->rs1] >> 
-                (unsigned)registers[instruction->rs2];
-        } else {
-            // SRA: Desloca o valor em rs1 para a direita de forma aritmética e armazena em rd.
-            registers[instruction->rd] = registers[instruction->rs1] >> 
-                registers[instruction->rs2];
+        case 5: // SRL ou SRA (Shift Right Logical ou Shift Right Arithmetic), dependendo de funct7
+            if(instruction->funct7 == 0){
+                // SRL: Desloca o valor em rs1 para a direita de forma lógica e armazena em rd.
+                registers[instruction->rd] = (unsigned)registers[instruction->rs1] >> 
+                    (unsigned)registers[instruction->rs2];
+            } else {
+                // SRA: Desloca o valor em rs1 para a direita de forma aritmética e armazena em rd.
+                registers[instruction->rd] = registers[instruction->rs1] >> 
+                    registers[instruction->rs2];
+            }
+            break;
+
+        case 6: // OR
+            // Realiza a operação OR bit a bit entre rs1 e rs2 e armazena o resultado em rd.
+            registers[instruction->rd] = registers[instruction->rs1] | 
+                    registers[instruction->rs2];
+            break;
+
+        case 7: // AND
+            // Realiza a operação AND bit a bit entre rs1 e rs2 e armazena o resultado em rd.
+            registers[instruction->rd] = registers[instruction->rs1] & 
+                    registers[instruction->rs2];
+            break;
+
+        default:
+            // Caso a operação não seja reconhecida, retorna erro (-1).
+            return -1;
+            break;
         }
-        break;
-
-    case 6: // OR
-        // Realiza a operação OR bit a bit entre rs1 e rs2 e armazena o resultado em rd.
-        registers[instruction->rd] = registers[instruction->rs1] | 
-                registers[instruction->rs2];
-        break;
-
-    case 7: // AND
-        // Realiza a operação AND bit a bit entre rs1 e rs2 e armazena o resultado em rd.
-        registers[instruction->rd] = registers[instruction->rs1] & 
-                registers[instruction->rs2];
-        break;
-
-    default:
-        // Caso a operação não seja reconhecida, retorna erro (-1).
-        return -1;
-        break;
     }
 
     // Se a execução da instrução for bem-sucedida, retorna 0.

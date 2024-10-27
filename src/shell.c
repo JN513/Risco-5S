@@ -58,7 +58,7 @@ void execute_command(char **args) {
         }
     } else if (strcmp(args[0], "write-stdin") == 0) {
 
-    } else if (strcmp(args[0], "exit") == 0) {
+    } else if (strcmp(args[0], "symbols") == 0) {
 
     } else {
         printf("Comando desconhecido: %s\n", args[0]);
@@ -69,7 +69,7 @@ void execute_command(char **args) {
 // Função de autocompletar (fornecida para readline)
 char *command_generator(const char *text, int state) {
     static int list_index, len;
-    char *commands[] = {"step", "until", "peek", "write-stdin", "exit", NULL};
+    char *commands[] = {"step", "until", "peek", "write-stdin", "symbols", "exit", NULL};
 
     if (!state) {
         list_index = 0;
