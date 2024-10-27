@@ -1,7 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-         <loc>https://jn513.github.io/Risco-5S/</loc>
-         <lastmod>2024-10-27</lastmod>
+        <loc>https://jn513.github.io/Risco-5S/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/contact/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/contact/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/contact/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/contributing/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/contributing/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/development/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/development/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/development/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/getting_started/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/getting_started/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/getting_started/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/install/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/install/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/install/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/contact/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/contact/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/contact/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/contributing/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/contributing/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/development/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/development/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/development/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/getting_started/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/getting_started/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/getting_started/"/>
+    </url>
+    <url>
+        <loc>https://jn513.github.io/Risco-5S/pt/install/</loc>
+        <lastmod>2024-10-27</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://jn513.github.io/Risco-5S/pt/install/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://jn513.github.io/Risco-5S/install/"/>
     </url>
 </urlset>
