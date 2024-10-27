@@ -1,6 +1,6 @@
 CC = gcc
 LD = ld
-FLAGS = -Wall -O3 -lreadline
+FLAGS = -Wall -O3 -lreadline -lelf
 RM = rm -f
 SRC_DIR = src
 BUILD_DIR = build
@@ -35,6 +35,9 @@ $(BUILD_DIR)/log.o: $(SRC_DIR)/log.c buildFolder
 	$(CC) $(FLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
 
 $(BUILD_DIR)/shell.o: $(SRC_DIR)/shell.c buildFolder
+	$(CC) $(FLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
+
+$(BUILD_DIR)/elf.o: $(SRC_DIR)/elf.c buildFolder
 	$(CC) $(FLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
 
 menuconfig:
