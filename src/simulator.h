@@ -1,9 +1,12 @@
 #ifndef __SIMULATOR_H__
 #define __SIMULATOR_H__
 
-#define DEBUG 1
+#include <time.h>
 
-typedef enum InstType { R, I, S, B, U, J } InstType;
+//#define DEBUG 1
+
+typedef enum InstType { R, I, S, B, U, J, INVALID } InstType;
+typedef enum Mode { USER, SUPERVISOR, MACHINE } Mode;
 
 typedef struct InstData {
     int opcode;
@@ -21,7 +24,11 @@ typedef struct InstData {
 extern int registers[32];         // Declare a variável global como extern
 extern float f_registers[32];     // Declare a variável global como extern
 extern int pc;
+extern int pc_old;
 extern int memory[MEMORY_SIZE];   // Declare a variável global como extern
+extern int mode;                  // Declare a variável global como extern
+extern int inst_count;
+extern clock_t start, end;
 
 // Funções para manipulação de memória
 int decode_instruction(int hex_instruction, InstData *instruction);

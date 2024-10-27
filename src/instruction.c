@@ -1,4 +1,5 @@
 #include "simulator.h"
+#include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,6 +23,8 @@ void get_instruction_type(InstData * instruction){
         instruction->type = U;
     } else if(instruction->opcode == 0x6F){
         instruction->type = J;
+    } else {
+        instruction->type = INVALID;
     }
 }
 
@@ -58,7 +61,7 @@ int decode_instruction(int hex_instruction, InstData * instruction){
             instruction->imm |= (hex_instruction & 0xF80) >> 7;      // Bits [11:7]
             instruction->funct3 = (hex_instruction & 0x7000) >> 12;
             instruction->rs1 = (hex_instruction & 0xF8000) >> 15;
-            instruction->rs2 = (hex_instruction & 0xF80) >> 20;
+            instruction->rs2 = (hex_instruction & 0x1F00000) >> 20;
 
             // Extensão de sinal para garantir valores negativos
             if (instruction->imm & 0x1000) {
@@ -74,7 +77,6 @@ int decode_instruction(int hex_instruction, InstData * instruction){
             instruction->funct3 = (hex_instruction & 0x7000) >> 12;
             instruction->rs1 = (hex_instruction & 0xF8000) >> 15;
             instruction->rs2 = (hex_instruction & 0xF80) >> 20;
-            instruction->imm <<= 1;
 
             // Extensão de sinal: se o bit 12 for 1, aplica extensão para 32 bits
             if (instruction->imm & 0x1000) {
@@ -95,7 +97,6 @@ int decode_instruction(int hex_instruction, InstData * instruction){
             instruction->imm |= (hex_instruction & 0xFF000);
             instruction->imm |= (hex_instruction & 0x7FE00000) >> 20;
             instruction->imm |= (hex_instruction & 0x100000) >> 9;
-            instruction->imm <<= 1;
             
             if (instruction->imm & 0x100000) { // Expansão de sinal
                 instruction->imm |= 0xFFE00000;
@@ -116,7 +117,7 @@ int decode_instruction(int hex_instruction, InstData * instruction){
     printf("RD: %d\n", instruction->rd);
     printf("RS1: %d\n", instruction->rs1);
     printf("RS2: %d\n", instruction->rs2);
-    printf("IMM: %d\n", instruction->imm);
+    printf("IMM: 0x%.8X\n", instruction->imm);
     printf("Funct3: %d\n", instruction->funct3);
     printf("Funct7: %d\n", instruction->funct7);
     printf("\n");
@@ -131,7 +132,7 @@ int execute_RType(InstData * instruction){
     // Decodifica o campo funct3 da instrução para identificar a operação.
 
 #ifdef DEBUG
-    printf("Executing R-Type instruction\n");
+    print_info("Executing R-Type instruction\n");
 #endif
 
     switch (instruction->funct3)
@@ -210,7 +211,7 @@ int execute_IType(InstData *instruction) {
     int imm = instruction->imm;
 
 #ifdef DEBUG
-    printf("Executing I-Type instruction\n");
+    print_info("Executing I-Type instruction\n");
 #endif
     
     // Verifica se o opcode é de load ou de instrução aritmética
@@ -264,8 +265,8 @@ int execute_IType(InstData *instruction) {
     } else if(instruction->opcode == 0x73) { // opcode para instruções do tipo I de sistema
         return execute_system_instruction(instruction);
     } else if(instruction->opcode == 0x67) { // opcode para instruções do tipo I de salto incondicional
-        pc += registers[instruction->rs1] + imm;
-        registers[instruction->rd] = pc + 4;
+        pc = registers[instruction->rs1] + imm;
+        registers[instruction->rd] = pc_old + 4;
     } else {
         return -1; // opcode inválido para instruções do tipo I
     }
@@ -277,6 +278,11 @@ int execute_IType(InstData *instruction) {
 // Execute RISC-V S instruction type
 int execute_SType(InstData *instruction) {
     int imm = instruction->imm;
+
+#ifdef DEBUG
+    print_info("Executing S-Type instruction\n");
+#endif
+
     switch (instruction->funct3) {
         case 0: // SB (store byte)
             memory_store_byte(registers[instruction->rs1] + imm, registers[instruction->rs2]);
@@ -296,6 +302,11 @@ int execute_SType(InstData *instruction) {
 // Execute RISC-V B instruction type
 int execute_BType(InstData *instruction) {
     int imm = instruction->imm;
+
+#ifdef DEBUG
+    print_info("Executing B-Type instruction\n");
+#endif
+
     switch (instruction->funct3) {
         case 0: // BEQ
             if (registers[instruction->rs1] == registers[instruction->rs2]) {
@@ -335,12 +346,17 @@ int execute_BType(InstData *instruction) {
 
 // Execute RISC-V U instruction type
 int execute_UType(InstData *instruction) {
+
+#ifdef DEBUG
+    print_info("Executing U-Type instruction\n");
+#endif
+
     switch (instruction->opcode) {
         case 0x37: // LUI
             registers[instruction->rd] = instruction->imm;
             break;
         case 0x17: // AUIPC
-            registers[instruction->rd] = pc + instruction->imm;
+            registers[instruction->rd] = pc_old + instruction->imm;
             break;
         default:
             return -1;
@@ -350,14 +366,21 @@ int execute_UType(InstData *instruction) {
 
 // Execute RISC-V J instruction type
 int execute_JType(InstData *instruction) {
+
+#ifdef DEBUG
+    print_info("Executing J-Type instruction\n");
+#endif
+
     int imm = instruction->imm;
-    registers[instruction->rd] = pc + 4;
-    pc += imm << 1;
+    registers[instruction->rd] = pc_old + 4;
+    pc = pc_old + imm;
     return 0;
 }
 
 // Main instruction dispatcher
 int execute_instruction(InstData *instruction) {
+    registers[0] = 0; // Register x0 is always zero
+
     switch (instruction->type) {
         case R:
             return execute_RType(instruction);
@@ -374,6 +397,8 @@ int execute_instruction(InstData *instruction) {
         default:
             return -1;
     }
+
+    registers[0] = 0; // Register x0 is always zero
 
     return 0;
 }
