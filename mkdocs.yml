@@ -7,6 +7,11 @@ site_url: https://jn513.github.io/Risco-5S/
 copyright: CC BY-SA 4.0 - Julio Nunes Avelar
 nav:
   - Home: index.md
+  - Install: install.md
+  - Development: development.md
+  - Contributing: contributing.md
+  - Contact: contact.md
+  - Getting Started: getting_started.md
 theme:
   name: material
   #language: pt-BR
@@ -37,12 +42,17 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 plugins:
-  #- pdf-export
-  #- offline
   - search:
       lang:
         - en
         - pt
+  - i18n:
+      languages:
+        - locale: pt
+          name: Português
+        - locale: en
+          name: English
+          default: true
 extra:
   social:
     - icon: fontawesome/brands/gitlab 

@@ -1,6 +1,6 @@
 CC = gcc
 LD = ld
-FLAGS = -Wall -O3 -lreadline -lelf
+FLAGS = -Wall -O3 -lreadline
 RM = rm -f
 SRC_DIR = src
 BUILD_DIR = build
