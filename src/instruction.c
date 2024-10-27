@@ -5,6 +5,12 @@
 #include <stdint.h>
 
 
+/**
+ * @brief Get the instruction type object
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return void
+ */
 void get_instruction_type(InstData * instruction){
     if(instruction->opcode == 0x33){
         instruction->type = R;
@@ -29,6 +35,14 @@ void get_instruction_type(InstData * instruction){
     }
 }
 
+
+/**
+ * @brief Decode instruction from hexadecimal format to data structure
+ * 
+ * @param hex_instruction Instruction in hexadecimal format
+ * @param instruction Instruction data structure
+ * @return int Execution error code (0 = no error)
+ */
 int decode_instruction(int hex_instruction, InstData * instruction){
     instruction->opcode = hex_instruction & 0x7F;
 
@@ -128,7 +142,12 @@ int decode_instruction(int hex_instruction, InstData * instruction){
 }
 
 
-// Função que executa as instruções de tipo R para o conjunto de instruções RV32I.
+/**
+ * @brief Execute R-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_RType(InstData * instruction){
     // Decodifica o campo funct3 da instrução para identificar a operação.
 
@@ -262,6 +281,12 @@ int execute_RType(InstData * instruction){
     return 0;
 }
 
+/**
+ * @brief Execute I-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_IType(InstData *instruction) {
     int imm = instruction->imm;
 
@@ -330,7 +355,12 @@ int execute_IType(InstData *instruction) {
 }
 
 
-// Execute RISC-V S instruction type
+/**
+ * @brief Execute S-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_SType(InstData *instruction) {
     int imm = instruction->imm;
 
@@ -354,7 +384,13 @@ int execute_SType(InstData *instruction) {
     return 0;
 }
 
-// Execute RISC-V B instruction type
+
+/**
+ * @brief Execute B-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_BType(InstData *instruction) {
     int imm = instruction->imm;
 
@@ -399,7 +435,13 @@ int execute_BType(InstData *instruction) {
     return 0;
 }
 
-// Execute RISC-V U instruction type
+
+/**
+ * @brief Execute U-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_UType(InstData *instruction) {
 
 #ifdef DEBUG
@@ -419,7 +461,13 @@ int execute_UType(InstData *instruction) {
     return 0;
 }
 
-// Execute RISC-V J instruction type
+
+/**
+ * @brief Execute J-Type instruction
+ * 
+ * @param instruction Instruction data structure pointer
+ * @return int Execution error code (0 = no error)
+ */
 int execute_JType(InstData *instruction) {
 
 #ifdef DEBUG
@@ -432,7 +480,13 @@ int execute_JType(InstData *instruction) {
     return 0;
 }
 
-// Main instruction dispatcher
+
+/**
+ * @brief Execute instruction
+ * 
+ * @param instruction Instruction data structure
+ * @return int Execution error code (0 = no error)
+ */
 int execute_instruction(InstData *instruction) {
     registers[0] = 0; // Register x0 is always zero
 

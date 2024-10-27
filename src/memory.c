@@ -20,6 +20,7 @@ unsigned int memory_load_byte(unsigned int address) {
     return temp; // Ajusta o byte correto
 }
 
+
 unsigned int memory_load_half(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
         print_error("Ilegal memory access at address 0x%.8X\n", address);
