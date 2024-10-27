@@ -44,5 +44,6 @@ int open_memory_file(char *filename, int memory[]);
 int execute_instruction(InstData *instruction);
 int execute_system_instruction(InstData *instruction);
 void init_simulator();
+int run_debug();
 
 #endif // __SIMULATOR_H__
