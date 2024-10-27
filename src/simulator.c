@@ -1,17 +1,22 @@
 #include "simulator.h"
+#include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 
 int registers[32];                // Definição da variável global
 float f_registers[32];            // Definição da variável global
-int pc;                           // Definição da variável global
+int pc, pc_old;                           // Definição da variável global
 int memory[MEMORY_SIZE];          // Definição da variável global
-
+int mode;                         // Definição da variável global
+int inst_count = 0;
+clock_t start, end;
 
 int open_memory_file(char * filename, int memory[]){
     FILE * file = fopen(filename, "r");
     if(file == NULL){
-        printf("Error opening file\n");
+        print_error("Error opening file\n");
         exit(1);
     }
 
@@ -26,7 +31,7 @@ int open_memory_file(char * filename, int memory[]){
 #endif
         i++;
         if(i >= MEMORY_SIZE){
-            printf("Memory file too large\n");
+            print_error("Memory file too large\n");
             exit(1);
         }
     }
@@ -39,6 +44,10 @@ int open_memory_file(char * filename, int memory[]){
 
 void init_simulator(){
     pc = 0;
+    pc_old = 0;
+    mode = MACHINE;
+    registers[0] = 0;
+    inst_count = 0;
 
     // Inicializa SP
     registers[2] = (MEMORY_SIZE-1) * 4;
@@ -48,4 +57,6 @@ void init_simulator(){
 
     // Inicializa FP
     registers[8] = (MEMORY_SIZE-1) * 4;
+
+    start = clock();
 }
