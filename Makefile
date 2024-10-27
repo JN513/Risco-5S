@@ -1,6 +1,6 @@
 CC = gcc
 LD = ld
-FLAGS = -Wall -std=c17 -O3
+FLAGS = -Wall -std=c17 -O3 -lreadline
 RM = rm -f
 SRC_DIR = src
 BUILD_DIR = build
@@ -12,7 +12,7 @@ all: simulator
 
 simulator: $(BUILD_DIR)/main.o $(BUILD_DIR)/simulator.o \
             $(BUILD_DIR)/instruction.o $(BUILD_DIR)/memory.o \
-            $(BUILD_DIR)/system.o
+            $(BUILD_DIR)/system.o $(BUILD_DIR)/log.o
 	$(CC) -o $@ $^
 
 $(BUILD_DIR)/main.o: $(SRC_DIR)/main.c buildFolder
@@ -30,6 +30,8 @@ $(BUILD_DIR)/memory.o: $(SRC_DIR)/memory.c buildFolder
 $(BUILD_DIR)/system.o: $(SRC_DIR)/system.c buildFolder
 	$(CC) $(FLAGS) -c $< -o $@
 
+$(BUILD_DIR)/log.o: $(SRC_DIR)/log.c buildFolder
+	$(CC) $(FLAGS) -c $< -o $@
 
 menuconfig:
 	$(MAKE) -C $(KCONFIG_DIR) menuconfig
