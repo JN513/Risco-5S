@@ -6,7 +6,7 @@
 
 unsigned int memory_load_byte(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
-        print_error("Ilegal memory access at address 0x%.8X\n", address);
+        print_error("Ilegal memory access at address 0x%.8X executing lb\n", address);
         exit(1);
     }
 
@@ -23,15 +23,9 @@ unsigned int memory_load_byte(unsigned int address) {
 
 unsigned int memory_load_half(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
-        print_error("Ilegal memory access at address 0x%.8X\n", address);
+        print_error("Ilegal memory access at address 0x%.8X executing lh\n", address);
         exit(1);
     }
-
-    if (address & 0x3) {
-        print_error("Unaligned memory access at address 0x%.8X\n", address);
-        exit(1);
-    }
-
     // Carrega a halfword a partir da memória
 
     int endbits = address & 0x3;
@@ -53,17 +47,19 @@ unsigned int memory_load_half(unsigned int address) {
 
 unsigned int memory_load_unsigned_byte(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
-        print_error("Ilegal memory access at address 0x%.8X\n", address);
+        print_error("Ilegal memory access at address 0x%.8X executing lbu\n", address);
         exit(1);
     }
-
+#ifdef DEBUG
+    print_warning("Unsigned byte load at address 0x%.8X, mask: 0x%.8X, memory: 0x%.8X\n", address, (0xFF << ((address & 0x3) << 3)), memory[address >> 2]);
+#endif
     // Carrega o byte sem sinal
     return memory[address >> 2] & (0xFF << ((address & 0x3) << 3));
 }
 
 unsigned int memory_load_unsigned_half(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
-        print_error("Ilegal memory access at address 0x%.8X\n", address);
+        print_error("Ilegal memory access at address 0x%.8X executing lhu\n", address);
         exit(1);
     }
 
@@ -83,7 +79,7 @@ unsigned int memory_load_unsigned_half(unsigned int address) {
 
 unsigned int memory_load_word(unsigned int address) {
     if ((address >> 2) >= MEMORY_SIZE) {
-        print_error("Ilegal memory access at address 0x%.8X\n", address);
+        print_error("Ilegal memory access at address 0x%.8X executing lw\n", address);
         exit(1);
     }
 
@@ -100,7 +96,7 @@ unsigned int memory_load_word(unsigned int address) {
 
 void memory_store_byte(unsigned int address, unsigned int data){
     if((address >> 2) >= MEMORY_SIZE) {
-        printf("Ilegal memory access at address 0x%.8X\n", address);
+        printf("Ilegal memory access at address 0x%.8X executing sb\n", address);
         exit(1);
     }
 
@@ -113,13 +109,18 @@ void memory_store_byte(unsigned int address, unsigned int data){
         temp = (temp & ~(0xFF << (endbits << 3))) | ((data & 0xFF) << (endbits << 3));
     }
 
+#ifdef DEBUG
+    printf("Storing byte 0x%.2X at address 0x%.8X, memory: 0x%.8X, temp: 0x%.8X\n", 
+        data, address, memory[address >> 2], temp);
+#endif
+
     memory[address >> 2] = temp;
 
 }
  
 void memory_store_halfword(unsigned int address, unsigned int data){
     if((address >> 2) >= MEMORY_SIZE) {
-        printf("Ilegal memory access at address 0x%.8X\n", address);
+        printf("Ilegal memory access at address 0x%.8X executing sh\n", address);
         exit(1);
     }
 
@@ -146,7 +147,7 @@ void memory_store_halfword(unsigned int address, unsigned int data){
 
 void memory_store_word(unsigned int address, unsigned int data){
     if((address >> 2) >= MEMORY_SIZE) {
-        printf("Ilegal memory access at address 0x%.8X\n", address);
+        printf("Ilegal memory access at address 0x%.8X executing sw\n", address);
         exit(1);
     }
 

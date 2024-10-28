@@ -12,26 +12,32 @@
  * @return void
  */
 void get_instruction_type(InstData * instruction){
-    if(instruction->opcode == 0x33){
-        instruction->type = R;
-    } else if(instruction->opcode == 0x13){
-        instruction->type = I;
-    } else if(instruction->opcode == 0x3){
-        instruction->type = I;
-    } else if(instruction->opcode == 0x73){
-        instruction->type = I;
-    } else if(instruction->opcode == 0x67){
-        instruction->type = I;
-    } else if(instruction->opcode == 0x63){
-        instruction->type = B;
-    } else if(instruction->opcode == 0x23){
-        instruction->type = S;
-    } else if(instruction->opcode == 0x37 || instruction->opcode == 0x17){
-        instruction->type = U;
-    } else if(instruction->opcode == 0x6F){
-        instruction->type = J;
-    } else {
-        instruction->type = INVALID;
+    switch (instruction->opcode) {
+        case 0x33:
+            instruction->type = R;
+            break;
+        case 0x13:
+        case 0x3:
+        case 0x73:
+        case 0x67:
+            instruction->type = I;
+            break;
+        case 0x63:
+            instruction->type = B;
+            break;
+        case 0x23:
+            instruction->type = S;
+            break;
+        case 0x37:
+        case 0x17:
+            instruction->type = U;
+            break;
+        case 0x6F:
+            instruction->type = J;
+            break;
+        default:
+            instruction->type = INVALID;
+            break;
     }
 }
 
@@ -91,7 +97,7 @@ int decode_instruction(int hex_instruction, InstData * instruction){
             instruction->imm |= (hex_instruction & 0xF00) >> 7;        // Bits [4:1]
             instruction->funct3 = (hex_instruction & 0x7000) >> 12;
             instruction->rs1 = (hex_instruction & 0xF8000) >> 15;
-            instruction->rs2 = (hex_instruction & 0xF80) >> 20;
+            instruction->rs2 = (hex_instruction & 0x1F00000) >> 20;
 
             // Extensão de sinal: se o bit 12 for 1, aplica extensão para 32 bits
             if (instruction->imm & 0x1000) {
@@ -397,7 +403,6 @@ int execute_BType(InstData *instruction) {
 #ifdef DEBUG
     print_info("Executing B-Type instruction\n");
 #endif
-
     switch (instruction->funct3) {
         case 0: // BEQ
             if (registers[instruction->rs1] == registers[instruction->rs2]) {

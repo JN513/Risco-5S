@@ -14,8 +14,8 @@
 void execute_read_syscall(){
     int fd = registers[10];
     int size = registers[12];
-    char *ptr = (char *)(memory + (registers[11] >> 2));
-    ptr += registers[11] & 0x3;
+    char *ptr = (char *)memory;
+    ptr += registers[11];
 
     registers[10] = read(fd, ptr, size);
 }
@@ -24,8 +24,8 @@ void execute_write_syscall(){
     int fd = registers[10];
     int size = registers[12];
 
-    char *ptr = (char *)(memory + (registers[11] >> 2));
-    ptr += registers[11] & 0x3;
+    char *ptr = (char *)memory;
+    ptr += registers[11];
 
     registers[10] = write(fd, ptr, size);
 }
